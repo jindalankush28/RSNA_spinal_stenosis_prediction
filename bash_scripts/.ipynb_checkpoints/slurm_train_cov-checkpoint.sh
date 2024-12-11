@@ -16,7 +16,11 @@ mkdir -p logs plots trained_models results
 # Activate conda environment
 source activate shijia_env
 
-
+# Check and install required packages
+if ! pip list | grep -F pydicom > /dev/null; then
+    echo "Installing pydicom..."
+    pip install pydicom
+fi
 
 # Set environment variables for better performance
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5

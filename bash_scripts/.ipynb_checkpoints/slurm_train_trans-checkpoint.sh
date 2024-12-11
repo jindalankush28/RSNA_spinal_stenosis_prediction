@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=spinal_models    # Job name
-#SBATCH --output=logs/spinal_cov.log # Standard output and error log
+#SBATCH --output=logs/spinal_trans.log # Standard output and error log
 #SBATCH --nodes=1                   # Run all processes on a single node
 #SBATCH --ntasks=1                  # Run a single task
 #SBATCH --cpus-per-task=24         # Number of CPU cores per task
@@ -16,14 +16,18 @@ mkdir -p logs plots trained_models results
 # Activate conda environment
 source activate shijia_env
 
-
+# Check and install required packages
+if ! pip list | grep -F pydicom > /dev/null; then
+    echo "Installing pydicom..."
+    pip install pydicom
+fi
 
 # Set environment variables for better performance
 export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5
 
 # Run training script for all models
 python train_models.py \
-    --models convnext efficientnet resnet152  \
+    --models vit swin beit \
     --batch_size 32 \
     --num_epochs 30 \
     --learning_rate 1e-4 \
