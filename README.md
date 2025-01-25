@@ -4,6 +4,7 @@
 
 This repository provides an end-to-end pipeline to classify spinal stenosis severity across different vertebral levels using a hybrid approach that integrates pre-trained vision models and dedicated vertebral level embeddings. The method leverages the feature extraction capabilities of pre-trained backbones while enriching them with spinal-level context, ultimately improving classification performance on the RSNA Spinal Stenosis dataset.
 
+COmplete project report can be found here: `Spinal Canal Stenosis CAD.pdf`
 ## Methodology
 
 ### Backbone Models
