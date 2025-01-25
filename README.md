@@ -43,7 +43,50 @@ To include vertebral level information, we introduced a dedicated embedding modu
   - Random rotations  
   - Normalization using ImageNet statistics:  
     `mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]`
+# Overview of the proposed spinal stenosis classification model architecture. The model combines pre-trained vision backbones with level-specific embeddings through a multi-layer classification head
 
+```mermaid
+---
+config:
+  theme: default
+---
+flowchart LR
+subgraph BN["Backbone Networks"]
+models["Available Models:<br>BEiT<br>ViT<br>Swin<br>ResNet<br>EfficientNet<br>ConvNeXt"]
+feat["Feature Extraction"]
+end
+
+subgraph EM["Embedding"]
+emb["Level Embedding<br>256-dim"]
+end
+
+subgraph CH["Classification Head"]
+l1["Linear Layer<br>backbone_dim + 256 → 512"]
+norm1["LayerNorm<br>+<br>GELU"]
+d1["Dropout 0.1"]
+l2["Linear Layer<br>512 → 256"]
+norm2["LayerNorm<br>+<br>GELU"]
+d2["Dropout 0.1"]
+out["Linear Layer<br>256 → 3"]
+end
+
+models --> feat
+l1 --> norm1
+norm1 --> d1
+d1 --> l2
+l2 --> norm2
+norm2 --> d2
+d2 --> out
+
+I_img["MRI<br>Image"] --> BN
+I_level["Vertebral<br>Level"] --> EM
+feat --> concat(("Concatenate"))
+emb --> concat
+concat --> l1
+out --> final["Severity Classification:<br>Normal/Mild<br>Moderate<br>Severe"]
+
+style models stroke:#000000
+```
 ### Transfer Learning Strategy
 
 1. Initially freeze backbone weights to retain pre-trained knowledge.
